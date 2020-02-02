@@ -1,0 +1,25 @@
+{
+  "name": "talionweb",
+  "version": "1.0.0",
+  "description": "site web talion",
+  "main": "server.js",
+  "dependencies": {
+    "socket.io": "^2.3.0",
+    "node": "^13.7.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goblin-cepas/TalionWeb.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goblin-cepas/TalionWeb/issues"
+  },
+  "homepage": "https://github.com/goblin-cepas/TalionWeb#readme"
+}
