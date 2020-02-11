@@ -1,0 +1,42 @@
+<div id="view"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        socket.emit('requireUsers', {});
+    });
+
+    socket.on('resultUsers', function (datas) {
+
+        datas.forEach(function (data) {
+            var result = '<div class="card"><h5 class="card-header text-center">' + data.pseudo + '</h5><div class="card-body">';
+            result += '<button type="button" id="isAdmin" class="btn btn-';
+            if (data.Administrateur == 'true') { result += 'success'; } else { result += 'secondary'; }
+            result += '" value="' + data.Administrateur + '">Administrateur</button> ';
+            result += '<button type="button" id="isRembourseur" class="btn btn-';
+            if (data.Rembourseur == 'true') { result += 'success'; } else { result += 'secondary'; }
+            result += '" value="' + data.Rembourseur + '">Rembourseur</button> ';
+            result += '<button type="button" id="isRecruteur" class="btn btn-';
+            if (data.Recruteur == 'true') { result += 'success'; } else { result += 'secondary'; }
+            result += '" value="' + data.Recruteur + '">Recruteur</button> ';
+            result += '<button type="button" id="isRaidLead" class="btn btn-';
+            if (data.RaidLead == 'true') { result += 'success'; } else { result += 'secondary'; }
+            result += '" value="' + data.RaidLead + '">Raid Lead</button> ';
+            result += '<button type="button" id="isEco" class="btn btn-';
+            if (data.ResponsableEco == 'true') { result += 'success'; } else { result += 'secondary'; }
+            result += '" value="' + data.ResponsableEco + '">Responsable Economie</button> ';
+            result += '<button type="button" class="btn btn-danger" value="false">Supprimer</button> ';
+            result += '</div>';
+            result += '</div>';
+            $("#view").append(result);
+        });
+    });
+
+    $(document).ready(function () {
+        $("#btn btn-danger").click(function (event) {
+            event.preventDefault();
+            console.log('press');
+//            socket.emit('createUser', { pseudo: $("#userPseudo").val(), password: $("#userPass").val(), isAdmin: $("#isAdmin").val(), isRembourseur: $("#isRembourseur").val(), isRecruteur: $("#isRecruteur").val(), isRaidLead: $("#isRaidLead").val(), isEco: $("#isEco").val() });
+        });
+    });
+</script>

@@ -17,7 +17,6 @@ MongoClient.connect(url, function(err, db) {
       db.close();
     });
   }); 
-*/
 
 MongoClient.connect(url, function (err, db) {
   if (err) throw err;
@@ -28,7 +27,7 @@ MongoClient.connect(url, function (err, db) {
     db.close();
   });
 });
-
+*/
 app.get('/', function (req, res) {
   loadPage("index", res);
 })
@@ -38,12 +37,39 @@ app.get('/', function (req, res) {
   .get('/inscription', function (req, res) {
     loadPage("inscription", res);
   })
+  .get('/users', function (req, res) {
+    loadPage("users", res);
+  })
   ;
 
 io.on('connection', function (socket) {
   console.log('a user connected');
   socket.on('connexionUser', function (data) {
     console.log(data);
+  });
+  socket.on('createUser', function (data) {
+    console.log(data);
+    MongoClient.connect(url, function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("Talion");
+      var myobj = { pseudo: data.pseudo, password: data.password, Administrateur: data.isAdmin, Rembourseur: data.isRembourseur, Recruteur: data.isRecruteur, RaidLead: data.isRaidLead, ResponsableEco: data.isEco };
+      dbo.collection("users").insertOne(myobj, function (err, res) {
+        if (err) throw err;
+        console.log("une utilisateur a été ajouté");
+        db.close();
+      });
+    });
+  });
+  socket.on('requireUsers', function (data) {
+    MongoClient.connect(url, function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("Talion");
+      dbo.collection("users").find({}).toArray(function (err, result) {
+        if (err) throw err;
+        socket.emit('resultUsers',result);
+        db.close();
+      });
+    });
   });
 });
 
