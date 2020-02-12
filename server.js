@@ -6,28 +6,6 @@ var assert = require('assert');
 var fs = require('fs');
 const url = "mongodb://localhost:27017/";
 
-/*
-MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("Talion");
-    var myobj = { name: "Company Inc", address: "Highway 37" };
-    dbo.collection("customers").insertOne(myobj, function(err, res) {
-      if (err) throw err;
-      console.log("1 document inserted");
-      db.close();
-    });
-  }); 
-
-MongoClient.connect(url, function (err, db) {
-  if (err) throw err;
-  var dbo = db.db("Talion");
-  dbo.collection("customers").findOne({}, function (err, result) {
-    if (err) throw err;
-    console.log(result.name);
-    db.close();
-  });
-});
-*/
 app.get('/', function (req, res) {
   loadPage("index", res);
 })
@@ -55,7 +33,7 @@ io.on('connection', function (socket) {
       var myobj = { pseudo: data.pseudo, password: data.password, Administrateur: data.isAdmin, Rembourseur: data.isRembourseur, Recruteur: data.isRecruteur, RaidLead: data.isRaidLead, ResponsableEco: data.isEco };
       dbo.collection("users").insertOne(myobj, function (err, res) {
         if (err) throw err;
-        console.log("une utilisateur a été ajouté");
+        console.log("un utilisateur a été ajouté");
         db.close();
       });
     });
@@ -66,12 +44,68 @@ io.on('connection', function (socket) {
       var dbo = db.db("Talion");
       dbo.collection("users").find({}).toArray(function (err, result) {
         if (err) throw err;
-        socket.emit('resultUsers',result);
+        socket.emit('resultUsers', result);
         db.close();
       });
     });
   });
+  socket.on('supprimerUser', function (data) {
+    MongoClient.connect(url, function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("Talion");
+      var myquery = { pseudo: data.pseudo };
+      dbo.collection("users").deleteOne(myquery, function (err, obj) {
+        if (err) throw err;
+        console.log("un utilisateur a été supprimé");
+        db.close();
+      });
+    });
+  });
+  socket.on('updateUser', function (data) {
+    MongoClient.connect(url, function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("Talion");
+      var myquery = { pseudo: data.pseudo };
+      var newvalues;
+      switch (data.attribut) {
+        case 'Administrateur':
+          newvalues = { $set: { Administrateur: data.value } };
+          break;
+        case 'Rembourseur':
+          newvalues = { $set: { Rembourseur: data.value } };
+          break;
+        case 'Recruteur':
+          newvalues = { $set: { Recruteur: data.value } };
+          break;
+        case 'RaidLead':
+          newvalues = { $set: { RaidLead: data.value } };
+          break;
+        case 'ResponsableEco':
+          newvalues = { $set: { ResponsableEco: data.value } };
+          break;
+        default:
+          console.log('Erreur lors de l\'update de' + data.pseudo);
+      }
+      dbo.collection("users").updateOne(myquery, newvalues, function (err, res) {
+        if (err) throw err;
+        console.log(data.pseudo + " a été modifié");
+        MongoClient.connect(url, function (err, db) {
+          if (err) throw err;
+          var dbo = db.db("Talion");
+          dbo.collection("users").findOne({ pseudo: data.pseudo }, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            socket.emit('userUpdated', result);
+            db.close();
+          });
+        });
+        db.close();
+      });
+    });
+  });
+
 });
+
 
 http.listen(80, function () {
   console.log('listening on *:80');
