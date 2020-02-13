@@ -9,24 +9,30 @@
         var i = 0;
         datas.forEach(function (data) {
             console.log(data);
-            var result = '<div id="' + data.pseudo + '">';
-            result += '<div class="card"><h5 class="card-header text-center">' + data.pseudo + '</h5><div class="card-body">';
-            result += '<button type="button" id="isAdmin" class="btn btn-';
+            var result = '<div class="container mt-3">';
+            var result = '<div class="row  mt-3">';
+            var result = '<div class="col  mt-3">';
+            result += '<div id="' + data.pseudo + '">';
+            result += '<div class="card"><h5 class="card-header text-center ">' + data.pseudo + '</h5><div class="card-body">';
+            result += '<button type="button" id="isAdmin" class="mt-1 mb-1 btn btn-';
             if (data.Administrateur == 'true') { result += 'success'; } else { result += 'secondary'; }
             result += '" value="' + data.Administrateur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Administrateur\',\'' + data.Administrateur + '\')">Administrateur</button> ';
-            result += '<button type="button" id="isRembourseur" class="btn btn-';
+            result += '<button type="button" id="isRembourseur" class="mt-1 mb-1 btn btn-';
             if (data.Rembourseur == 'true') { result += 'success'; } else { result += 'secondary'; }
             result += '" value="' + data.Rembourseur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Rembourseur\',\'' + data.Rembourseur + '\')">Rembourseur</button> ';
-            result += '<button type="button" id="isRecruteur" class="btn btn-';
+            result += '<button type="button" id="isRecruteur" class="mt-1 mb-1 btn btn-';
             if (data.Recruteur == 'true') { result += 'success'; } else { result += 'secondary'; }
             result += '" value="' + data.Recruteur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Recruteur\',\'' + data.Recruteur + '\')">Recruteur</button> ';
-            result += '<button type="button" id="isRaidLead" class="btn btn-';
+            result += '<button type="button" id="isRaidLead" class="mt-1 mb-1 btn btn-';
             if (data.RaidLead == 'true') { result += 'success'; } else { result += 'secondary'; }
             result += '" value="' + data.RaidLead + '" onclick="updateUser(\'' + data.pseudo + '\',\'RaidLead\',\'' + data.RaidLead + '\')">Raid Lead</button> ';
-            result += '<button type="button" id="isEco" class="btn btn-';
+            result += '<button type="button" id="isEco" class="mt-1 mb-1 btn btn-';
             if (data.ResponsableEco == 'true') { result += 'success'; } else { result += 'secondary'; }
             result += '" value="' + data.ResponsableEco + '" onclick="updateUser(\'' + data.pseudo + '\',\'ResponsableEco\',\'' + data.ResponsableEco + '\')">Responsable Economie</button> ';
-            result += '<button type="button" class="btn btn-danger" value="false" onclick="supprimerUser(\'' + data.pseudo + '\')">Supprimer</button> ';
+            result += '<button type="button" class="mt-1 mb-1 btn btn-danger" value="false" onclick="supprimerUser(\'' + data.pseudo + '\')">Supprimer</button> ';
+            result += '</div>';
+            result += '</div>';
+            result += '</div>';
             result += '</div>';
             result += '</div>';
             result += '</div>';
@@ -57,22 +63,22 @@
     socket.on('userUpdated', function (data) {
 
         var result = '<div class="card"><h5 class="card-header text-center">' + data.pseudo + '</h5><div class="card-body">';
-        result += '<button type="button" id="isAdmin" class="btn btn-';
+        result += '<button type="button" id="isAdmin" class="mt-1 mb-1 btn btn-';
         if (data.Administrateur == 'true') { result += 'success'; } else { result += 'secondary'; }
         result += '" value="' + data.Administrateur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Administrateur\',\'' + data.Administrateur + '\')">Administrateur</button> ';
-        result += '<button type="button" id="isRembourseur" class="btn btn-';
+        result += '<button type="button" id="isRembourseur" class="mt-1 mb-1 btn btn-';
         if (data.Rembourseur == 'true') { result += 'success'; } else { result += 'secondary'; }
         result += '" value="' + data.Rembourseur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Rembourseur\',\'' + data.Rembourseur + '\')">Rembourseur</button> ';
-        result += '<button type="button" id="isRecruteur" class="btn btn-';
+        result += '<button type="button" id="isRecruteur" class="mt-1 mb-1 btn btn-';
         if (data.Recruteur == 'true') { result += 'success'; } else { result += 'secondary'; }
         result += '" value="' + data.Recruteur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Recruteur\',\'' + data.Recruteur + '\')">Recruteur</button> ';
-        result += '<button type="button" id="isRaidLead" class="btn btn-';
+        result += '<button type="button" id="isRaidLead" class="mt-1 mb-1 btn btn-';
         if (data.RaidLead == 'true') { result += 'success'; } else { result += 'secondary'; }
         result += '" value="' + data.RaidLead + '" onclick="updateUser(\'' + data.pseudo + '\',\'RaidLead\',\'' + data.RaidLead + '\')">Raid Lead</button> ';
-        result += '<button type="button" id="isEco" class="btn btn-';
+        result += '<button type="button" id="isEco" class="mt-1 mb-1 btn btn-';
         if (data.ResponsableEco == 'true') { result += 'success'; } else { result += 'secondary'; }
         result += '" value="' + data.ResponsableEco + '" onclick="updateUser(\'' + data.pseudo + '\',\'ResponsableEco\',\'' + data.ResponsableEco + '\')">Responsable Economie</button> ';
-        result += '<button type="button" class="btn btn-danger" value="false" onclick="supprimerUser(\'' + data.pseudo + '\')">Supprimer</button> ';
+        result += '<button type="button" class="mt-1 mb-1 btn btn-danger" value="false" onclick="supprimerUser(\'' + data.pseudo + '\')">Supprimer</button> ';
         result += '</div>';
         result += '</div>';
         $("#" + data.pseudo).empty().append(result);

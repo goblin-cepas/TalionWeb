@@ -1,10 +1,16 @@
-var app = require('express')();
+var express = require('express')
+var app = express()
+var favicon = require('serve-favicon')
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
+var path = require('path')
 var fs = require('fs');
 const url = "mongodb://localhost:27017/";
+
+app.use(favicon(path.join(__dirname, 'ressources', 'favicon.ico')))
+app.use(express.static('ressources'));
 
 app.get('/', function (req, res) {
   loadPage("index", res);

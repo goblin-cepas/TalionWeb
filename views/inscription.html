@@ -1,18 +1,32 @@
-<form>
-    <div class="form-group">
-        <input type="text" class="form-control" id="userPseudo" placeholder="Pseudo de l'utilisateur">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-dark btn-lg btn-block mt-3 mb-3">Creation d'un utilisateur</button>
+            <form>
+                <div class="form-group">
+                    <input type="text" class="form-control btn-lg btn-block text-center" id="userPseudo"
+                        placeholder="Pseudo de l'utilisateur">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control btn-lg btn-block text-center" id="userPass"
+                        placeholder="Mot de passe de l'utilisateur">
+                </div>
+            </form>
+            <button type="button" id="isAdmin" class="btn btn-secondary btn-lg btn-block"
+                value="false">Administrateur</button>
+            <button type="button" id="isRembourseur" class="btn btn-secondary btn-lg btn-block"
+                value="false">Rembourseur</button>
+            <button type="button" id="isRecruteur" class="btn btn-secondary btn-lg btn-block"
+                value="false">Recruteur</button>
+            <button type="button" id="isRaidLead" class="btn btn-secondary btn-lg btn-block" value="false">Raid
+                Lead</button>
+            <button type="button" id="isEco" class="btn btn-secondary btn-lg btn-block" value="false">Responsable
+                Economie</button>
+            <button id="btnCreateUser" type="submit" class="btn btn-primary btn-lg btn-block">Créer</button>
+        </div>
     </div>
-    <div class="form-group">
-        <input type="text" class="form-control" id="userPass" placeholder="Mot de passe de l'utilisateur">
-    </div>
-</form>
-<button type="button" id="isAdmin" class="btn btn-secondary" value="false">Administrateur</button>
-<button type="button" id="isRembourseur" class="btn btn-secondary" value="false">Rembourseur</button>
-<button type="button" id="isRecruteur" class="btn btn-secondary" value="false">Recruteur</button>
-<button type="button" id="isRaidLead" class="btn btn-secondary" value="false">Raid Lead</button>
-<button type="button" id="isEco" class="btn btn-secondary" value="false">Responsable Economie</button>
-<button id="btnCreateUser" type="submit" class="btn btn-primary">Créer</button>
 
+</div>
 <script>
     $(document).ready(function () {
         $("#btnCreateUser").click(function (event) {
@@ -23,11 +37,11 @@
 
     $("button").click(function (event) {
         event.preventDefault();
-        if ($(this).attr('class') == 'btn btn-success') {
-            $(this).attr('class', 'btn btn-secondary');
+        if ($(this).attr('class') == 'btn btn-success btn-lg btn-block') {
+            $(this).attr('class', 'btn btn-secondary btn-lg btn-block');
             $(this).attr('value', false);
-        } else if ($(this).attr('class') == 'btn btn-secondary') {
-            $(this).attr('class', 'btn btn-success');
+        } else if ($(this).attr('class') == 'btn btn-secondary btn-lg btn-block') {
+            $(this).attr('class', 'btn btn-success btn-lg btn-block');
             $(this).attr('value', true);
         }
     });
