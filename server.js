@@ -129,8 +129,12 @@ io.on('connection', function (socket) {
         db.close();
       });
     });
-    
+
   });
+  socket.on('fileSended', function (data) {
+    console.log('file')
+  });
+
 
 });
 

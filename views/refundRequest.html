@@ -113,7 +113,10 @@
             method: 'POST',
             body: formData
         })
-            .then(progressDone
+            .then(function () {
+                progressDone();
+                socket.emit('fileSended', function () { });
+            }
             ) // <- Add `progressDone` call here
             .catch(() => { /* Error. Inform the user */ })
     }
