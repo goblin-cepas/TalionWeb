@@ -10,10 +10,10 @@
         datas.forEach(function (data) {
             console.log(data);
             var result = '<div class="container mt-3">';
-            var result = '<div class="row  mt-3">';
-            var result = '<div class="col  mt-3">';
+            var result = '<div class="row">';
+            var result = '<div class="offset-md-2 col-md-8 col-xs-12 mt-3">';
             result += '<div id="' + data.pseudo + '">';
-            result += '<div class="card"><h5 class="card-header text-center ">' + data.pseudo + '</h5><div class="card-body">';
+            result += '<div class="card text-white bg-dark border-secondary"><h5 class="card-header text-center">' + data.pseudo + '</h5><div class="card-body">';
             result += '<button type="button" id="isAdmin" class="mt-1 mb-1 btn btn-';
             if (data.Administrateur == 'true') { result += 'success'; } else { result += 'secondary'; }
             result += '" value="' + data.Administrateur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Administrateur\',\'' + data.Administrateur + '\')">Administrateur</button> ';
@@ -61,8 +61,7 @@
     }
 
     socket.on('userUpdated', function (data) {
-
-        var result = '<div class="card"><h5 class="card-header text-center">' + data.pseudo + '</h5><div class="card-body">';
+        var result = '<div class="card text-white bg-dark border-secondary"><h5 class="card-header text-center">' + data.pseudo + '</h5><div class="card-body">';
         result += '<button type="button" id="isAdmin" class="mt-1 mb-1 btn btn-';
         if (data.Administrateur == 'true') { result += 'success'; } else { result += 'secondary'; }
         result += '" value="' + data.Administrateur + '" onclick="updateUser(\'' + data.pseudo + '\',\'Administrateur\',\'' + data.Administrateur + '\')">Administrateur</button> ';

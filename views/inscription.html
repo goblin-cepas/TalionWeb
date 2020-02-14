@@ -33,6 +33,25 @@
             event.preventDefault();
             socket.emit('createUser', { pseudo: $("#userPseudo").val(), password: $("#userPass").val(), isAdmin: $("#isAdmin").val(), isRembourseur: $("#isRembourseur").val(), isRecruteur: $("#isRecruteur").val(), isRaidLead: $("#isRaidLead").val(), isEco: $("#isEco").val() });
         });
+
+    });
+
+    $("#userPseudo").keyup(function () {
+        socket.emit('findUser', { pseudo: $("#userPseudo").val() });
+    });
+
+    socket.on('userDidntExist', function () {
+        console.log('userDidntExist');
+        $('#btnCreateUser').empty();
+        $('#btnCreateUser').prop('disabled', false);
+        $('#btnCreateUser').text('Créer');
+    });
+
+    socket.on('userExist', function (data) {
+        console.log('userExist');
+        $('#btnCreateUser').empty();
+        $('#btnCreateUser').prop('disabled', true);
+        $('#btnCreateUser').text('Le pseudo ' + data.pseudo + ' existe déjà. Veuillez en Changer.');
     });
 
     $("button").click(function (event) {

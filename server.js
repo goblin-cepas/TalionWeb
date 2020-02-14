@@ -1,6 +1,6 @@
-var express = require('express')
-var app = express()
-var favicon = require('serve-favicon')
+var express = require('express');
+var app = express();
+var favicon = require('serve-favicon');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var MongoClient = require('mongodb').MongoClient;
@@ -30,6 +30,23 @@ io.on('connection', function (socket) {
   console.log('a user connected');
   socket.on('connexionUser', function (data) {
     console.log(data);
+  });
+  socket.on('findUser', function (data) {
+    MongoClient.connect(url, function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("Talion");
+      var myquery = { pseudo: data.pseudo };
+      dbo.collection("users").findOne(myquery, function (err, obj) {
+        if (err) throw err;
+        console.log(data.pseudo);
+        if (obj != null) {
+          socket.emit('userExist', { pseudo: data.pseudo });
+        } else {
+          socket.emit('userDidntExist');
+        }
+        db.close();
+      });
+    });
   });
   socket.on('createUser', function (data) {
     console.log(data);
