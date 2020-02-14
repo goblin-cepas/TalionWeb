@@ -24,6 +24,9 @@ app.get('/', function (req, res) {
   .get('/users', function (req, res) {
     loadPage("users", res);
   })
+  .get('/refundRequest', function (req, res) {
+    loadPage("refundRequest", res);
+  })
   ;
 
 io.on('connection', function (socket) {
@@ -84,6 +87,7 @@ io.on('connection', function (socket) {
       });
     });
   });
+
   socket.on('updateUser', function (data) {
     MongoClient.connect(url, function (err, db) {
       if (err) throw err;
@@ -125,6 +129,7 @@ io.on('connection', function (socket) {
         db.close();
       });
     });
+    
   });
 
 });
