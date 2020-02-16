@@ -82,5 +82,5 @@
         result += '</div>';
         $("#" + data.pseudo).empty().append(result);
     });
-
+    socket.emit('pageLoading', { right: "Administrateur" });
 </script>

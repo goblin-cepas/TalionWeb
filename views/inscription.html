@@ -23,8 +23,9 @@
             event.preventDefault();
             socket.emit('createUser', { pseudo: $("#userPseudo").val(), password: $("#userPass").val(), isAdmin: $("#isAdmin").val(), isRembourseur: $("#isRembourseur").val(), isRecruteur: $("#isRecruteur").val(), isRaidLead: $("#isRaidLead").val(), isEco: $("#isEco").val() });
         });
-        
     });
+
+    socket.emit('pageLoading', { right: "Recruteur" });
 
     $("#userPseudo").keyup(function () {
         socket.emit('findUser', { pseudo: $("#userPseudo").val() });

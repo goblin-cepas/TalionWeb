@@ -67,14 +67,38 @@ io.on('connection', function (socket) {
   socket.on('documentReady', function () {
     socket.emit('session', socket.handshake.session.userdata);
   });
-
+  socket.on('pageLoading', function (data) {
+    if (socket.handshake.session.userdata != null) {
+      switch (data.right) {
+        case 'Administrateur':
+          if (socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          break;
+        case 'Recruteur':
+          if (socket.handshake.session.userdata.Recruteur == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          break;
+        case 'RaidLead':
+          if (socket.handshake.session.userdata.RaidLead == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          break;
+        case 'Rembourseur':
+          if (socket.handshake.session.userdata.Rembourseur == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          break;
+        case 'ResponsableEco':
+          if (socket.handshake.session.userdata.ResponsableEco == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          break;
+        default:
+          break;
+      }
+    } else {
+      socket.emit('isNotLegit');
+    }
+  });
   socket.on('deconnexionUser', function () {
     console.log("déconnexion User");
     socket.handshake.session.userdata = null;
     socket.handshake.session.save();
     socket.emit('sessionDestroy');
   });
-  
+
   socket.on('findUser', function (data) {
     MongoClient.connect(url, function (err, db) {
       if (err) throw err;
