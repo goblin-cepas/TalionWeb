@@ -35,21 +35,25 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item">
-					<a class="nav-link" href="/inscription">Créer Utilisateur</a>
+				<li class="nav-item" id="linkInscription">
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/users">Liste des Utilisateurs</a>
+				<li class="nav-item" id="linkUserList">
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/refundRequest">Demander un remboursement</a>
+				<li class="nav-item" id="linkRefundRequest">
+				</li>
+				<li class="nav-item" id="linkRefund">
+				</li>
+				<li class="nav-item" id="linkRaidLead">
+				</li>
+				<li class="nav-item" id="linkEco">
 				</li>
 			</ul>
-			<form class="form-inline my-2 my-lg-0">
+			<form id="connexionForm" class="form-inline my-2 my-lg-0">
 				<input class="form-control mr-sm-2" id="pseudo" type="text" placeholder="Pseudo" aria-label="Pseudo">
 				<input class="form-control mr-sm-2" id="password" type="password" placeholder="Password"
 					aria-label="Password">
-				<button id="btnConnexion" class="btn btn-outline-success my-2 my-sm-0" type="submit">Connexion</button>
+				<button id="btnConnexion" class="btn btn-outline-success my-2 my-sm-0"
+					onclick="connect()">Connexion</button>
 			</form>
 		</div>
 	</nav>
@@ -57,14 +61,50 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
 		var socket = io();
-		socket.on('connexionSucess', function () { });
-	</script>
-
-	<script>
-		$(document).ready(function () {
-			$("#btnConnexion").click(function (event) {
-				event.preventDefault();
-				socket.emit('connexionUser', { pseudo: $("#pseudo").val(), password: $("#password").val() });
-			});
+		socket.on('ConnexionSucess', function (data) {
+			$('#pseudo').remove();
+			$('#password').remove();
+			$('#btnConnexion').remove();
+			$('#connexionForm').append('<button id="btnDeconnexion" onclick="deco()" class="btn btn-outline-danger my-2 my-sm-0">Déconnexion</button>');
 		});
+		socket.on('WrongPassword', function (data) { $('#password').attr("placeholder", "mauvais mot de passe"); });
+		socket.on('WrongPseudo', function (data) { $('#pseudo').attr("placeholder", "le Pseudo " + data.pseudo + " n'existe pas"); });
+		socket.on('session', function (data) {
+			$('#linkRefundRequest').empty();
+			$('#linkUserList').empty();
+			$('#linkRefund').empty();
+			$('#linkInscription').empty();
+			$('#linkRaidLead').empty();
+			$('#linkEco').empty();
+			if (data != null) {
+				$('#pseudo').remove();
+				$('#password').remove();
+				$('#btnConnexion').remove();
+				$('#connexionForm').append('<button id="btnDeconnexion" onclick="deco()" class="btn btn-outline-danger my-2 my-sm-0" type="submit">Déconnexion</button>');
+				$('#linkRefundRequest').append('<a class="nav-link" href="/refundRequest">Demander un remboursement</a>');
+				if (data.Administrateur == 'true') {
+					$('#linkUserList').append(' <a class="nav-link" href="/users">Liste des Utilisateurs</a> ');
+					$('#linkRefund').append(' <a class="nav-link" href="/refund">Effectuer un remboursement</a> ');
+					$('#linkInscription').append(' <a class="nav-link" href="/inscription">Créer Utilisateur</a> ');
+					$('#linkRaidLead').append(' <a class="nav-link" href="/raidLead">RaidLead</a> ');
+					$('#linkEco').append(' <a class="nav-link" href="/economie">Eco</a> ');
+				}
+				else if (data.Rembourseur == 'true') { $('#linkRefund').append(' <a class="nav-link" href="/refund">Effectuer un remboursement</a> '); }
+				else if (data.Recruteur == 'true') { $('#linkInscription').append(' <a class="nav-link" href="/inscription">Créer Utilisateur</a> '); }
+				else if (data.RaidLead == 'true') { $('#linkRaidLead').append(' <a class="nav-link" href="/raidLead">RaidLead</a> '); }
+				else if (data.ResponsableEco == 'true') { $('#linkEco').append(' <a class="nav-link" href="/economie">Eco</a> '); }
+			}
+			socket.on('sessionDestroy', function () { location.reload(); });
+		});
+
+		$(document).ready(function () {
+			socket.emit('documentReady');
+		});
+
+		function deco() {
+			socket.emit('deconnexionUser');
+		}
+		function connect() {
+			socket.emit('connexionUser', { pseudo: $("#pseudo").val(), password: $("#password").val() });
+		}
 	</script>

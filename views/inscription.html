@@ -12,16 +12,6 @@
                         placeholder="Mot de passe de l'utilisateur">
                 </div>
             </form>
-            <button type="button" id="isAdmin" class="btn btn-secondary btn-lg btn-block"
-                value="false">Administrateur</button>
-            <button type="button" id="isRembourseur" class="btn btn-secondary btn-lg btn-block"
-                value="false">Rembourseur</button>
-            <button type="button" id="isRecruteur" class="btn btn-secondary btn-lg btn-block"
-                value="false">Recruteur</button>
-            <button type="button" id="isRaidLead" class="btn btn-secondary btn-lg btn-block" value="false">Raid
-                Lead</button>
-            <button type="button" id="isEco" class="btn btn-secondary btn-lg btn-block" value="false">Responsable
-                Economie</button>
             <button id="btnCreateUser" type="submit" class="btn btn-primary btn-lg btn-block">Créer</button>
         </div>
     </div>
@@ -33,7 +23,7 @@
             event.preventDefault();
             socket.emit('createUser', { pseudo: $("#userPseudo").val(), password: $("#userPass").val(), isAdmin: $("#isAdmin").val(), isRembourseur: $("#isRembourseur").val(), isRecruteur: $("#isRecruteur").val(), isRaidLead: $("#isRaidLead").val(), isEco: $("#isEco").val() });
         });
-
+        
     });
 
     $("#userPseudo").keyup(function () {
@@ -52,16 +42,5 @@
         $('#btnCreateUser').empty();
         $('#btnCreateUser').prop('disabled', true);
         $('#btnCreateUser').text('Le pseudo ' + data.pseudo + ' existe déjà. Veuillez en Changer.');
-    });
-
-    $("button").click(function (event) {
-        event.preventDefault();
-        if ($(this).attr('class') == 'btn btn-success btn-lg btn-block') {
-            $(this).attr('class', 'btn btn-secondary btn-lg btn-block');
-            $(this).attr('value', false);
-        } else if ($(this).attr('class') == 'btn btn-secondary btn-lg btn-block') {
-            $(this).attr('class', 'btn btn-success btn-lg btn-block');
-            $(this).attr('value', true);
-        }
     });
 </script>

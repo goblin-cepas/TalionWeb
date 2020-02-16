@@ -2,7 +2,13 @@ var express = require('express');
 var app = express();
 var favicon = require('serve-favicon');
 var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http),
+  session = require("express-session")({
+    secret: "my-secret",
+    resave: true,
+    saveUninitialized: true
+  }),
+  sharedsession = require("express-socket.io-session");
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var path = require('path')
@@ -11,6 +17,8 @@ const url = "mongodb://localhost:27017/";
 
 app.use(favicon(path.join(__dirname, 'ressources', 'favicon.ico')))
 app.use(express.static('ressources'));
+app.use(session);
+io.use(sharedsession(session));
 
 app.get('/', function (req, res) {
   loadPage("index", res);
@@ -29,11 +37,44 @@ app.get('/', function (req, res) {
   })
   ;
 
+
 io.on('connection', function (socket) {
   console.log('a user connected');
   socket.on('connexionUser', function (data) {
     console.log(data);
+    MongoClient.connect(url, function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("Talion");
+      var myquery = { pseudo: data.pseudo };
+      dbo.collection("users").findOne(myquery, function (err, obj) {
+        if (err) throw err;
+        if (obj != null) {
+          if (obj.password == data.password) {
+            socket.handshake.session.userdata = obj;
+            socket.handshake.session.save();
+            socket.emit('session', socket.handshake.session.userdata);
+            console.log(socket.handshake.session.userdata);
+          } else {
+            socket.emit('WrongPassword', { pseudo: data.pseudo });
+          }
+        } else {
+          socket.emit('WrongPseudo', { pseudo: data.pseudo });
+        }
+        db.close();
+      });
+    });
   });
+  socket.on('documentReady', function () {
+    socket.emit('session', socket.handshake.session.userdata);
+  });
+
+  socket.on('deconnexionUser', function () {
+    console.log("déconnexion User");
+    socket.handshake.session.userdata = null;
+    socket.handshake.session.save();
+    socket.emit('sessionDestroy');
+  });
+  
   socket.on('findUser', function (data) {
     MongoClient.connect(url, function (err, db) {
       if (err) throw err;
@@ -56,7 +97,7 @@ io.on('connection', function (socket) {
     MongoClient.connect(url, function (err, db) {
       if (err) throw err;
       var dbo = db.db("Talion");
-      var myobj = { pseudo: data.pseudo, password: data.password, Administrateur: data.isAdmin, Rembourseur: data.isRembourseur, Recruteur: data.isRecruteur, RaidLead: data.isRaidLead, ResponsableEco: data.isEco };
+      var myobj = { pseudo: data.pseudo, password: data.password, Administrateur: "false", Rembourseur: "false", Recruteur: "false", RaidLead: "false", ResponsableEco: "false" };
       dbo.collection("users").insertOne(myobj, function (err, res) {
         if (err) throw err;
         console.log("un utilisateur a été ajouté");
