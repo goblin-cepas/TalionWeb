@@ -1,0 +1,159 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20200220.032027.13968.0.001.json",
+    "dumpEventTime": "2020-02-20T03:20:27Z",
+    "dumpEventTimeStamp": "1582165227203",
+    "processId": 13968,
+    "cwd": "C:\\wamp64\\www\\TalionWeb",
+    "commandLine": [
+      "node",
+      ".\\server.js"
+    ],
+    "nodejsVersion": "v12.14.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "win32",
+    "componentVersions": {
+      "node": "12.14.1",
+      "v8": "7.7.299.13-node.16",
+      "uv": "1.33.1",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.40.0",
+      "napi": "5",
+      "llhttp": "2.0.1",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.14.1/node-v12.14.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.14.1/node-v12.14.1.tar.gz",
+      "libUrl": "https://nodejs.org/download/release/v12.14.1/win-x64/node.lib"
+    },
+    "osName": "Windows_NT",
+    "osRelease": "10.0.18363",
+    "osVersion": "Windows 10 Pro",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 2643218,
+        "nice": 0,
+        "sys": 2461781,
+        "idle": 34868312,
+        "irq": 862640
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 1686812,
+        "nice": 0,
+        "sys": 581000,
+        "idle": 37705500,
+        "irq": 51625
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 4474218,
+        "nice": 0,
+        "sys": 1324671,
+        "idle": 34174234,
+        "irq": 34843
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 2025843,
+        "nice": 0,
+        "sys": 397437,
+        "idle": 37549843,
+        "irq": 20484
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 3168500,
+        "nice": 0,
+        "sys": 1035500,
+        "idle": 35769125,
+        "irq": 31296
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 1552734,
+        "nice": 0,
+        "sys": 289531,
+        "idle": 38130859,
+        "irq": 20390
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 2729953,
+        "nice": 0,
+        "sys": 814421,
+        "idle": 36428750,
+        "irq": 24312
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 1219593,
+        "nice": 0,
+        "sys": 345906,
+        "idle": 38407625,
+        "irq": 23656
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 2967046,
+        "nice": 0,
+        "sys": 856984,
+        "idle": 36149093,
+        "irq": 29203
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 844500,
+        "nice": 0,
+        "sys": 333187,
+        "idle": 38795437,
+        "irq": 15265
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 3909296,
+        "nice": 0,
+        "sys": 1142843,
+        "idle": 34920984,
+        "irq": 34593
+      },
+      {
+        "model": "AMD Ryzen 7 2700X Eight-Core Processor         ",
+        "speed": 3700,
+        "user": 807375,
+        "nice": 0,
+        "sys": 556750,
+        "idle": 38609000,
+        "irq": 18203
+      },
+      {
+        "model": 

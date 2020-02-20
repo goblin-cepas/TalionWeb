@@ -49,4 +49,43 @@
             }
         });
     });
+
+$("button").click(function (event) {
+event.preventDefault();
+if ($(this).attr('class') == 'btn btn-success btn-lg btn-block') {
+$(this).attr('class', 'btn btn-secondary btn-lg btn-block');
+$(this).attr('value', false);
+} else if ($(this).attr('class') == 'btn btn-secondary btn-lg btn-block') {
+$(this).attr('class', 'btn btn-success btn-lg btn-block');
+$(this).attr('value', true);
+}
+});
+
+
+var http      = require('http');
+var timers    = require('timers');
+ 
+var getData = function(){
+    http.get('http://www.example.com/', function(res){
+        res.on('data', function(data){
+            console.log(data);
+        });
+ 
+        res.on('error', function(e){
+            console.log(e);
+        });
+ 
+    });
+}
+ 
+getData();
+timers.setInterval(function(){
+    getData();
+}, 2000);
 </script>
+
+Fredjii
+Mralemao
+Vikings of Albion
+7 septembre
+

@@ -12,6 +12,7 @@
                         placeholder="Mot de passe de l'utilisateur">
                 </div>
             </form>
+
             <button id="btnCreateUser" type="submit" class="btn btn-primary btn-lg btn-block">Créer</button>
         </div>
     </div>
@@ -21,12 +22,12 @@
     $(document).ready(function () {
         $("#btnCreateUser").click(function (event) {
             event.preventDefault();
-            socket.emit('createUser', { pseudo: $("#userPseudo").val(), password: $("#userPass").val(), isAdmin: $("#isAdmin").val(), isRembourseur: $("#isRembourseur").val(), isRecruteur: $("#isRecruteur").val(), isRaidLead: $("#isRaidLead").val(), isEco: $("#isEco").val() });
+            socket.emit('createUser', { pseudo: $("#userPseudo").val(), password: $("#userPass").val() });
         });
     });
 
     socket.emit('pageLoading', { right: "Recruteur" });
-
+    
     $("#userPseudo").keyup(function () {
         socket.emit('findUser', { pseudo: $("#userPseudo").val() });
     });

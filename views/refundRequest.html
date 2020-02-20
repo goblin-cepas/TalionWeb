@@ -1,4 +1,23 @@
-<button id="btnCreateUser" class="btn btn-secondary btn-lg btn-block">rechercher</button>
+<div id="view">
+
+</div>
 <script>
+
     socket.emit('pageLoading', { right: "" });
+
+    var UserData;
+
+    socket.on('isLegit', function (data) {
+        console.log(data);
+        $('#view').append('<button id="btnCreateUser" class="btn btn-secondary btn-lg btn-block" onclick = "requestPlayerData(\'' + data.player.pseudo + '\')" > rechercher</button > ');
+        UserData = data.player;
+    });
+
+    function requestPlayerData(pseudo) {
+        socket.emit('requestPlayerData', { pseudo: pseudo });
+    }
+
+    socket.on('resultRequestPlayerData', function (data) {
+        console.log(data);
+    })
 </script>

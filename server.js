@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var favicon = require('serve-favicon');
+var https = require('https');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http),
   session = require("express-session")({
@@ -13,7 +14,11 @@ var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var path = require('path')
 var fs = require('fs');
-const url = "mongodb://localhost:27017/";
+var Nightmare = require('nightmare');
+var nightmare = Nightmare({ show: true });
+
+
+var url = "mongodb://localhost:27017/";
 
 app.use(favicon(path.join(__dirname, 'ressources', 'favicon.ico')))
 app.use(express.static('ressources'));
@@ -67,31 +72,35 @@ io.on('connection', function (socket) {
   socket.on('documentReady', function () {
     socket.emit('session', socket.handshake.session.userdata);
   });
+
   socket.on('pageLoading', function (data) {
     if (socket.handshake.session.userdata != null) {
       switch (data.right) {
         case 'Administrateur':
-          if (socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          if (socket.handshake.session.userdata.Administrateur == 'true') { socket.emit('isLegit', { player: socket.handshake.session.userdata }); } else { socket.emit('isNotLegit'); }
           break;
         case 'Recruteur':
-          if (socket.handshake.session.userdata.Recruteur == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          if (socket.handshake.session.userdata.Recruteur == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { socket.emit('isLegit', { player: socket.handshake.session.userdata }); } else { socket.emit('isNotLegit'); }
           break;
         case 'RaidLead':
-          if (socket.handshake.session.userdata.RaidLead == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          if (socket.handshake.session.userdata.RaidLead == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { socket.emit('isLegit', { player: socket.handshake.session.userdata }); } else { socket.emit('isNotLegit'); }
           break;
         case 'Rembourseur':
-          if (socket.handshake.session.userdata.Rembourseur == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          if (socket.handshake.session.userdata.Rembourseur == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { socket.emit('isLegit', { player: socket.handshake.session.userdata }); } else { socket.emit('isNotLegit'); }
           break;
         case 'ResponsableEco':
-          if (socket.handshake.session.userdata.ResponsableEco == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { } else { socket.emit('isNotLegit'); }
+          if (socket.handshake.session.userdata.ResponsableEco == 'true' || socket.handshake.session.userdata.Administrateur == 'true') { socket.emit('isLegit', { player: socket.handshake.session.userdata }); } else { socket.emit('isNotLegit'); }
           break;
         default:
+          socket.emit('isLegit', { player: socket.handshake.session.userdata });
           break;
       }
     } else {
       socket.emit('isNotLegit');
     }
+
   });
+
   socket.on('deconnexionUser', function () {
     console.log("déconnexion User");
     socket.handshake.session.userdata = null;
@@ -116,6 +125,7 @@ io.on('connection', function (socket) {
       });
     });
   });
+
   socket.on('createUser', function (data) {
     console.log(data);
     MongoClient.connect(url, function (err, db) {
@@ -129,6 +139,7 @@ io.on('connection', function (socket) {
       });
     });
   });
+
   socket.on('requireUsers', function (data) {
     MongoClient.connect(url, function (err, db) {
       if (err) throw err;
@@ -140,6 +151,7 @@ io.on('connection', function (socket) {
       });
     });
   });
+
   socket.on('supprimerUser', function (data) {
     MongoClient.connect(url, function (err, db) {
       if (err) throw err;
@@ -201,6 +213,11 @@ io.on('connection', function (socket) {
   });
 
 
+  socket.on('requestPlayerData', function (data) {
+    getCharacterSDeath(data.pseudo);
+    //    socket.emit('resultRequestPlayerData', result);
+  });
+
 });
 
 
@@ -214,3 +231,55 @@ function loadPage(page, res) {
   res.write(fs.readFileSync(__dirname + '/views/footer.html', 'utf8'));
   res.end();
 }
+
+function getCharacterSDeath(pseudo) {
+  console.log(pseudo);
+  var url = 'https://albiononline.com/fr/killboard/search?q=' + pseudo;
+  console.log(url);
+
+  var resultat = new Array();
+  var path = '';
+  var pass1 = nightmare
+    .goto(url)
+    .wait('a[data-reactid=".0.2.1.1.1.$player0.0"]')
+    .click('a[data-reactid=".0.2.1.1.1.$player0.0"]')
+    .wait('a[data-reactid=".0.2.1.1.0.0.1.0.0.2.$tbody.$0.$Killer.0.0"]')
+    .click('a[data-reactid=".0.2.1.1.0.0.1.0.0.2.$tbody.$0.$Killer.0.0"]')
+    .wait('tr[data-reactid=".0.2.1.1.0.0.0.2.0.2.$tbody.$0"]')
+    .wait('tr[data-reactid=".0.2.1.1.0.0.0.4.0.2.$tbody.$0"]')
+    .evaluate((pseudo) => {
+      return $('strong:contains("' + pseudo + '")').parent().parent().parent().next().next().next().children().children().attr('data-reactid')
+    }, pseudo)
+    .catch(error => {
+      console.error('Search failed:', error)
+    });
+
+  var pass2 = pass1.then(function (value) {
+    return nightmare
+      .click('a[data-reactid="' + value + '"]')
+      .wait('a[data-reactid=".0.2.1.3.0.0.0.0.2.0.0.0.1.0"]')
+      .evaluate((pseudo) => {
+        return $('a:contains("' + pseudo + '")').parent().parent().parent().parent().next().children().next().children().attr('data-reactid')
+      }, pseudo)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass3 = pass2.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+  pass3.then(function () { console.log(pass1); console.log(pass2); console.log(pass3); console.log(path);})
+
+
+  //<img src="https://gameinfo.albiononline.com/api/gameinfo/items/T4_BAG.png?count=1&amp;quality=1" title="T4_BAG" data-reactid=".0.2.1.3.0.0.0.0.2.1.1.$5.0">
+  //data-reactid=".0.2.1.3.0.0.0.0.2.1.1"
+}
+
+
+
+

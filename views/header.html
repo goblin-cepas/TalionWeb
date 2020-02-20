@@ -108,5 +108,7 @@
 			socket.emit('connexionUser', { pseudo: $("#pseudo").val(), password: $("#password").val() });
 		}
 
+		var UserData;
+		socket.on('isLegit', function (data) { UserData = data.player; });
 		socket.on('isNotLegit', function () { window.location = "index"; });
 	</script>
