@@ -4,13 +4,16 @@
   "description": "site web talion",
   "main": "server.js",
   "dependencies": {
+    "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "express-socket.io-session": "^1.3.5",
+    "jquery": "^1.9.1",
     "mongodb": "^3.5.2",
     "nightmare": "^3.0.2",
     "node": "^13.7.0",
+    "popper.js": "^1.16.0",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"

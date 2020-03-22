@@ -3,6 +3,7 @@ var app = express();
 var favicon = require('serve-favicon');
 var https = require('https');
 var http = require('http').createServer(app);
+const axios = require('axios');
 var io = require('socket.io')(http),
   session = require("express-session")({
     secret: "my-secret",
@@ -214,8 +215,9 @@ io.on('connection', function (socket) {
 
 
   socket.on('requestPlayerData', function (data) {
-    getCharacterSDeath(data.pseudo);
-    //    socket.emit('resultRequestPlayerData', result);
+    var resultat = new Array();
+    getCharacterSDeath(data.pseudo, resultat);
+    setTimeout(function () { console.log(resultat); socket.emit('resultRequestPlayerData', resultat); }, 8000);
   });
 
 });
@@ -232,12 +234,117 @@ function loadPage(page, res) {
   res.end();
 }
 
-function getCharacterSDeath(pseudo) {
+function getCharacterSDeath() {
+  var resultat = [];
+  var heure;
+  var id;
+  var victimName;
+  var victimGuild;
+  MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("Talion");
+    dbo.collection("Killboard").find().toArray(function (err, docs) {
+      console.log("inside : " + docs[0].number);
+      number = docs[0].number;
+      var url = 'https://albiononline.com/fr/killboard/kill/' + number;
+      var logs = 'test';
+      console.log(url);
+      var pass1 = nightmare
+        .goto(url)
+        .wait('time[data-reactid=".0.2.1.3.0.0.0.0.0.0.1"]')
+        .evaluate(() => {
+          return $('time[data-reactid=".0.2.1.3.0.0.0.0.0.0.1"]').text();
+
+        })
+        .catch(error => {
+          console.error('Search failed:', error)
+        });
+
+      var pass2 = pass1.then(function (value) {
+        heure = value;
+        console.log(value);
+
+        return nightmare
+          .evaluate(() => {
+            return $('span[data-reactid=".0.2.1.2.0.2"]').text();
+          })
+          .catch(error => {
+            console.error('Search failed:', error)
+          });
+      });
+
+      var pass3 = pass2.then(function (value) {
+        id = value;
+        console.log(value);
+
+        return nightmare
+          .evaluate(() => {
+            return $('a[data-reactid=".0.2.1.3.0.0.0.0.2.0.0.0.1.0"]').text();
+          })
+          .catch(error => {
+            console.error('Search failed:', error)
+          });
+      });
+
+      var pass4 = pass3.then(function (value) {
+        victimName = value;
+        console.log(value);
+
+        return nightmare
+          .evaluate(() => {
+            return $('span[data-reactid=".0.2.1.3.0.0.0.0.2.0.0.1.1.0.1.1"]').text();
+          })
+          .catch(error => {
+            console.error('Search failed:', error)
+          });
+      });
+      var pass5 = pass4.then(function (value) {
+        victimGuild = value;
+        console.log(value);
+
+        return nightmare
+          .evaluate((resultat) => {
+            if ($('div[data-reactid=".0.2.1.3.0.0.0.0.2.1.0"]').next().children().children().attr('src').length) {
+              var selector = $('div[data-reactid=".0.2.1.3.0.0.0.0.2.1.0"]').next().children();
+              while (selector.length) {
+                selector = selector.next();
+                resultat.push(selector.children().attr('src'));
+              }
+              return selector.children().attr('src');
+              //              return $('div[data-reactid=".0.2.1.3.0.0.0.0.2.1.0"]').next().children().children().attr('src');
+            }
+
+            /* 
+            while (item.length) {
+              resultat.push(item.children().attr('src'));
+              item = item.next();
+            }
+            */
+          }, resultat)
+          .catch(error => {
+            console.error('Search failed:', error)
+          });
+      });
+
+      var pass6 = pass5.then(function (value) {
+        console.log(resultat);
+
+      });
+
+    });
+
+  });
+}
+
+
+
+
+
+function getCharacterSDeath2(pseudo, resultat) {
   console.log(pseudo);
   var url = 'https://albiononline.com/fr/killboard/search?q=' + pseudo;
   console.log(url);
 
-  var resultat = new Array();
   var path = '';
   var pass1 = nightmare
     .goto(url)
@@ -273,11 +380,183 @@ function getCharacterSDeath(pseudo) {
         return $('div[data-reactid="' + value + '"]').children().attr('src')
       }, value)
   });
-  pass3.then(function () { console.log(pass1); console.log(pass2); console.log(pass3); console.log(path);})
 
+  var pass4 = pass3.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
 
-  //<img src="https://gameinfo.albiononline.com/api/gameinfo/items/T4_BAG.png?count=1&amp;quality=1" title="T4_BAG" data-reactid=".0.2.1.3.0.0.0.0.2.1.1.$5.0">
-  //data-reactid=".0.2.1.3.0.0.0.0.2.1.1"
+  var pass5 = pass4.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass6 = pass5.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass7 = pass6.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass8 = pass7.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass9 = pass8.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass10 = pass9.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass11 = pass10.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass12 = pass11.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass13 = pass12.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass14 = pass13.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass15 = pass14.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass16 = pass15.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass17 = pass16.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass18 = pass17.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass19 = pass18.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  var pass20 = pass19.then(function (value) {
+    resultat.push(value);
+    return nightmare
+      .evaluate((path) => {
+        return $('div[data-reactid="' + path + '"]').next().attr('data-reactid')
+      }, path)
+      .catch(error => {
+        console.error('Search failed:', error)
+      });
+  });
+
+  var pass21 = pass20.then(function (value) {
+    path = value;
+    return nightmare
+      .evaluate((value) => {
+        return $('div[data-reactid="' + value + '"]').children().attr('src')
+      }, value)
+  });
+
+  pass21.then(function (value) {
+    resultat.push(value);
+    console.log(resultat);
+  })
+
 }
 
 

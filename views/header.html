@@ -19,9 +19,9 @@
 		@media (max-width: 1365px) {
 			body {
 				background: none;
-				background-color: rgb(212, 185, 144);
+				background-color: rgb(71, 70, 68);
 			}
-		}
+		}''
 	</style>
 </head>
 
@@ -108,7 +108,5 @@
 			socket.emit('connexionUser', { pseudo: $("#pseudo").val(), password: $("#password").val() });
 		}
 
-		var UserData;
-		socket.on('isLegit', function (data) { UserData = data.player; });
 		socket.on('isNotLegit', function () { window.location = "index"; });
 	</script>
